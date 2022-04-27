@@ -56,7 +56,7 @@ def parseCIDR(CIDR):
     """Accept a CIDR prefix and return a 32 bit binary mask string"""
 
     bitstrMask = ""
-    validChars = {"1", "2", "3", "4", "5", "6", "7", "9", "/"}
+    validChars = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "/"}
 
     # Test 1: Entered mask must be a string
     if type(CIDR) != str:
