@@ -1,3 +1,6 @@
+from ast import parse
+
+
 def parseIP(strIP):
     """Accepts an IP address as a string in dot decimal format and returns (bitstrIP,intOctets[],bitstrOctets[],)"""
 
@@ -142,6 +145,63 @@ def andBitstrs(bitsrt1, bitsrt2):
     return andResult
 
 
+def carrySumIP(ip, summand):
+    """
+    Accepts IP as intOctet list or dotDecimal str and adds a decimal int to the the IP
+    while properly carrying over to the next octet
+    """
+    # if a string is supplied try and parse to intOctet list using parseIP funct
+    if type(ip) == str:
+        ip = parseIP(ip)[1]
+
+    # if ip input is not a list raise an error
+    if type(ip) != list:
+        raise TypeError("Error! expected list, got", type(ip))
+
+    # IP should contain exactly 4 octets
+    if len(ip) != 4:
+        raise ValueError("Error! IP does not have 4 octets")
+
+    # Octets should be ints
+    for octet in ip:
+        if type(octet) != int:
+            raise TypeError("Error! octet in IP is not of type int")
+
+    # Octets should be between 0 and 255, inclusive
+    for octet in ip:
+        if octet > 255:
+            raise ValueError("Error! Octet in IP larger than 255")
+        elif octet < 0:
+            raise ValueError("Error! Octet in IP is negative")
+
+    # Supplied summand should be type of int
+    if type(summand) != int:
+        raise TypeError("Error! summand expected int, got", type(summand))
+
+    # Supplied summand should be positive int
+    if summand < 0:
+        raise ValueError("Error! provided summand is less then zero")
+
+    # Walk through IP list backwards starting with 4th octet
+    for i in range(len(ip) - 1, -1, -1):
+        # if octet + summand will not overflow current octet, add summand to octet. Break from loop
+        if ip[i] + summand < 256:
+            ip[i] += summand
+            break
+        # If octet will overflow and not indexing 1st octet
+        elif ip[i] + summand >= 256 and i != 0:
+            summand += ip[i]  # Add value of current octet to summand
+            ip[i] = 0  # Set octet to 0
+            ip[i] = summand % 256  # Set current octet to remainder portion
+            summand = summand // 256  # Floor divide summand to carry over to next octet
+        # If indexing 1st octet and octet will overflow 255, raise an OverFlowError
+        elif i == 0 and ip[i] + summand >= 256:
+            raise OverflowError(
+                "Error! Supplied IP and summand will result in an IP greater than 255.255.255.255"
+            )
+    return ip
+
+
 def subnetCalc(ip, CIDR):
     """Accepts IP and CIDR slash prefex and returns subnetting information"""
 
@@ -169,7 +229,6 @@ def subnetCalc(ip, CIDR):
     networkNumber = ".".join(networkNumberStrs)
 
     return networkNumber
-
 
 
 """
