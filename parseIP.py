@@ -121,7 +121,7 @@ def andBitstrs(bitsrt1, bitsrt2):
 
     andResult = ""
 
-    if type(bitsrt1) != Str or type(bitsrt2) != Srt:
+    if type(bitsrt1) != str or type(bitsrt2) != str:
         print("Error! bitsrtings must have type of Srt!")
         raise TypeError
 
