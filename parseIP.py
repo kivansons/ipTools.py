@@ -171,8 +171,6 @@ def subnetCalc(ip, CIDR):
     return networkNumber
 
 
-ip = int(1000)
-print(parseIP(ip))
 
 """
 ipAddress = input("Enter an IP address: ")
