@@ -1,6 +1,3 @@
-from ast import parse
-
-
 def parseIP(strIP):
     """Accepts an IP address as a string in dot decimal format and returns (bitstrIP,intOctets[],bitstrOctets[],)"""
 
@@ -105,13 +102,14 @@ def bitstrToInt(bitstr):
     """Accept a bitstring and return a decimal int"""
 
     intOctet = 0
+    # Find the exponent of the most signifigant bit for the bitstring
     most_signifigant_exponent = len(bitstr) - 1
 
     i = 0
-    for char in bitstr:
+    for bit in bitstr:
 
-        # If bit is 1 add that bits decimal value to intOctets accumulator
-        if char == "1":
+        # Add the bits decimal value calculated from it's exponent to intOctets accumulator
+        if bit == "1":
             intOctet += 2 ** (most_signifigant_exponent - i)
             i += 1
         else:
@@ -120,7 +118,7 @@ def bitstrToInt(bitstr):
 
 
 def andBitstrs(bitsrt1, bitsrt2):
-    """Accept two bitsrtings and return the results of a bitwise AND"""
+    """Accept two bitsrtings and return the results of a bitwise AND."""
 
     andResult = ""
 
@@ -146,9 +144,9 @@ def andBitstrs(bitsrt1, bitsrt2):
 
 
 def carrySumIP(ip, summand):
-    """
-    Accepts IP as intOctet list or dotDecimal str and adds a decimal int to the the IP
-    while properly carrying over to the next octet
+
+    """Accepts IP as intOctet list or dotDecimal str and adds a decimal int to the the IP
+    while properly carrying over to the next octet.
     """
     # if a string is supplied try and parse to intOctet list using parseIP funct
     if type(ip) == str:
@@ -202,9 +200,26 @@ def carrySumIP(ip, summand):
     return ip
 
 
+def carrySubtractIP(ip, subtrahend):
+
+    """Accepts IP as intOctet list or dotDecimal str, and subtracts a decimal int from the the IP
+    while properly carrying from to the next octet.
+    """
+
+
 def subnetCalc(ip, CIDR):
     """Accepts IP and CIDR slash prefex and returns subnetting information"""
-
+    """
+    Todo:
+    Write IP add function *Done*
+    Write IP subtract function
+    Write function to find subnet group size from CIDR
+    Calc firstHostIP
+    Calc LastHostIP
+    Calc BroadcastIP
+    Calc numHostIPs
+    Write function to convert CIDR to Subnet Mask
+    """
     networkNumber = ""  # The Subnet's Network number
     firstHostIP = ""  # First Usable host IP
     lastHostIP = ""  # Last Usable Host IP
