@@ -1,4 +1,4 @@
-def parseIP(Str_IP_Param):
+def parse_ip(Str_IP_Param):
     """Accepts an IP address as a string in dot decimal format and returns (Bitstr_IP,Int_Octets[],Bitstr_Octets[],)"""
     Str_IP = Str_IP_Param
     Int_Octets = []  # IP as list of integer octets
@@ -251,7 +251,7 @@ def AddSubtractIP(IP_Param, Operand_Param):
 
     # if a string IP is supplied try and parse to Int_Octet list using parseIP funct
     if type(IP_Param) == str:
-        ip = [Int_Octet for Int_Octet in parseIP(IP_Param)[1]]
+        ip = [Int_Octet for Int_Octet in parse_ip(IP_Param)[1]]
     else:
         ip = [octet for octet in IP_Param]
     Operand = Operand_Param
@@ -307,7 +307,7 @@ def subnetCalc(ip, CIDR_Prefix):
     """
 
     # get IP working information to calculate subnet information
-    Bitsrt_IP, Int_Octets, Bitsrt_Octets = parseIP(ip)
+    Bitsrt_IP, Int_Octets, Bitsrt_Octets = parse_ip(ip)
 
     # Parse CIDR_Prefix Mask and store as 32 bitstring
     Subnet_Mask_Bitstring = parseCIDR(CIDR_Prefix)
