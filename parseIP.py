@@ -57,41 +57,41 @@ def parse_ip(str_ip_param):
     return bitstr_ip, int_octets, bitstr_octets
 
 
-def parse_cidr(CIDR_Mask_param):
+def parse_cidr(cidr_mask_param):
     """Accept a CIDR_Prefix and return a 32 bit binary mask string"""
 
-    Subnet_Mask_Bitstring = ""
-    Valid_Chars = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "/"}
+    subnet_mask_bitstring = ""
+    VALID_CHARS = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "/"}
 
     # Test 1: Entered mask must be a string
-    if type(CIDR_Mask_param) != str:
+    if type(cidr_mask_param) != str:
         raise TypeError("Error! Entered mask is not a string")
-    CIDR_Prefix = CIDR_Mask_param
+    cidr_prefix = cidr_mask_param
     # Remove any whitespace
-    CIDR_Prefix = CIDR_Prefix.strip()
+    cidr_prefix = cidr_prefix.strip()
 
     # Test 2: CIDR_Prefix should only contain decimal digits and "/"
-    for char in CIDR_Prefix:
-        if char not in Valid_Chars:
+    for char in cidr_prefix:
+        if char not in VALID_CHARS:
             raise ValueError("Error! Invalid character in CIDR_Prefix")
 
     # Test 3: First char should be "/"
-    if CIDR_Prefix[0] != "/":
+    if cidr_prefix[0] != "/":
         raise ValueError("Error! CIDR_Prefix must start with a / ")
 
-    CIDR_Prefix = int(CIDR_Prefix.strip("/"))
+    cidr_prefix = int(cidr_prefix.strip("/"))
 
     # Test 4: CIDR_Prefix must be between 0 and 32
-    if CIDR_Prefix > 32 or CIDR_Prefix < 0:
+    if cidr_prefix > 32 or cidr_prefix < 0:
         raise ValueError("Error! Must be between 0 and 32")
     # Append number of "1" equal to CIDR_Prefix prefix
-    for i in range(CIDR_Prefix):
-        Subnet_Mask_Bitstring += "1"
+    for i in range(cidr_prefix):
+        subnet_mask_bitstring += "1"
     # Pad with "0" until bitstring is 32 bits long
-    while len(Subnet_Mask_Bitstring) < 32:
-        Subnet_Mask_Bitstring += "0"
+    while len(subnet_mask_bitstring) < 32:
+        subnet_mask_bitstring += "0"
 
-    return Subnet_Mask_Bitstring
+    return subnet_mask_bitstring
 
 
 def parse_bitstr(Bitstr_IP):
