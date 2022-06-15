@@ -1,60 +1,60 @@
-def parse_ip(Str_IP_Param):
+def parse_ip(str_ip_param):
     """Accepts an IP address as a string in dot decimal format and returns (Bitstr_IP,Int_Octets[],Bitstr_Octets[],)"""
-    Str_IP = Str_IP_Param
-    Int_Octets = []  # IP as list of integer octets
-    Bitstr_Octets = [
+    str_ip = str_ip_param
+    int_octets = []  # IP as list of integer octets
+    bitstr_octets = [
         "",
         "",
         "",
         "",
     ]  # IP as list of zero padded 8bit binary string octets
-    Bitstr_IP = ""  # IP as 32 bit binary string
-    Valid_Chars = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".")
+    bitstr_ip = ""  # IP as 32 bit binary string
+    VALID_CHARS = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".")
     EIGHT_BIT_POWERS = (128, 64, 32, 16, 8, 4, 2, 1)
 
     # Test 1: Entered IP must be a string
-    if type(Str_IP) != str:
+    if type(str_ip) != str:
         raise TypeError("Error! Entered IP is not a string")
 
     # Remove whitespace
-    Str_IP = Str_IP.strip()
+    str_ip = str_ip.strip()
 
     # Test 2: IP should only contain decimal digits and "."
-    for char in Str_IP:
-        if char not in Valid_Chars:
+    for char in str_ip:
+        if char not in VALID_CHARS:
             raise ValueError("Error! Invalid character in IP")
 
     # Split Str_IP and store octets as int in Int_Octets if split element is not empty
-    Int_Octets = [int(octet) for octet in Str_IP.split(".") if octet != ""]
+    int_octets = [int(octet) for octet in str_ip.split(".") if octet != ""]
 
     # Test 3: IP should contain exactly 4 octets
-    if len(Int_Octets) != 4:
+    if len(int_octets) != 4:
         raise ValueError("Error! IP does not have 4 octets")
 
     # Test 4: Octets should be between 0 and 255, inclusive
-    for octet in Int_Octets:
+    for octet in int_octets:
         if octet > 255:
             raise ValueError("Error! Octet in IP larger than 255")
         elif octet < 0:
             raise ValueError("Error! Octet in IP is negative")
 
     # Convert Int_Octets to Bitstr_Octets
-    for i in range(len(Int_Octets)):
-        workingOctet = Int_Octets[i]
+    for i in range(len(int_octets)):
+        workingOctet = int_octets[i]
 
         # For each 8bit power of 2, subtract and append 0 or 1 to bitstring
         for j in range(len(EIGHT_BIT_POWERS)):
             if workingOctet - EIGHT_BIT_POWERS[j] < 0:
-                Bitstr_Octets[i] += "0"
+                bitstr_octets[i] += "0"
 
             elif workingOctet - EIGHT_BIT_POWERS[j] >= 0:
                 workingOctet -= EIGHT_BIT_POWERS[j]
-                Bitstr_Octets[i] += "1"
+                bitstr_octets[i] += "1"
 
         # Build 32bit Bitstr_IP from octets in Bitstr_Octets
-        Bitstr_IP = "".join(Bitstr_Octets)
+        bitstr_ip = "".join(bitstr_octets)
 
-    return Bitstr_IP, Int_Octets, Bitstr_Octets
+    return bitstr_ip, int_octets, bitstr_octets
 
 
 def parse_cidr(CIDR_Mask_param):
