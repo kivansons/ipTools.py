@@ -57,7 +57,7 @@ def parse_ip(Str_IP_Param):
     return Bitstr_IP, Int_Octets, Bitstr_Octets
 
 
-def parseCIDR(CIDR_Mask_param):
+def parse_cidr(CIDR_Mask_param):
     """Accept a CIDR_Prefix and return a 32 bit binary mask string"""
 
     Subnet_Mask_Bitstring = ""
@@ -94,7 +94,7 @@ def parseCIDR(CIDR_Mask_param):
     return Subnet_Mask_Bitstring
 
 
-def parseBitstr(Bitstr_IP):
+def parse_bitstr(Bitstr_IP):
     """Accept a 32bit bitstring and return four bitstring octets"""
 
     Bitstr_Octets = ["", "", "", ""]
@@ -104,7 +104,7 @@ def parseBitstr(Bitstr_IP):
     return Bitstr_Octets
 
 
-def bitstrToInt(Bitstr):
+def bitstr_to_int(Bitstr):
     """Accept a bitstring and return a decimal int"""
 
     Int_Octet = 0
@@ -119,7 +119,7 @@ def bitstrToInt(Bitstr):
     return Int_Octet
 
 
-def andBitstrs(Bitsrt_1, Bitsrt_2):
+def and_bitstr(Bitsrt_1, Bitsrt_2):
     """Accept two bitsrtings and return the results of a bitwise AND."""
 
     AND_Result = ""
@@ -145,7 +145,7 @@ def andBitstrs(Bitsrt_1, Bitsrt_2):
     return AND_Result
 
 
-def carryAddIP(IP_Param, Summand_Param):
+def add_ip(IP_Param, Summand_Param):
 
     """Accepts IP as Int_Octet list and adds a decimal int to the IP
     while properly carrying over to the next octet if needed.
@@ -174,7 +174,7 @@ def carryAddIP(IP_Param, Summand_Param):
     return ip
 
 
-def borrowSubtractIP(IP_Param, Subtrahend_Param):
+def subtract_ip(IP_Param, Subtrahend_Param):
 
     """Accepts IP as Int_Octet list, and subtracts a decimal int from the the IP
     while properly borrowing from higher octets if needed.
@@ -243,7 +243,7 @@ def borrowSubtractIP(IP_Param, Subtrahend_Param):
     """
 
 
-def AddSubtractIP(IP_Param, Operand_Param):
+def add_or_subtract_ip(IP_Param, Operand_Param):
     """Accepts IP as a string or Int_Octet List, and a positive or negative value decimal int
     validates the input and then calls the borrowSubtractIP() or carryAddIP() fuctions depending
     on the sign of the supplied int
@@ -282,16 +282,16 @@ def AddSubtractIP(IP_Param, Operand_Param):
 
     # If Operand is positive perform addition
     if Operand > 0:
-        ip = carryAddIP(ip, Operand)
+        ip = add_ip(ip, Operand)
         return ip
     # If Operand is negative convert to positive int and perform subtraction
     if Operand < 0:
         Operand = Operand * -1
-        ip = borrowSubtractIP(ip, Operand)
+        ip = subtract_ip(ip, Operand)
         return ip
 
 
-def subnetCalc(ip, CIDR_Prefix):
+def subnet_calc(ip, CIDR_Prefix):
     """Accepts IP and CIDR_Prefix slash prefex and returns subnetting information"""
     """
     Todo:
@@ -310,27 +310,27 @@ def subnetCalc(ip, CIDR_Prefix):
     Bitsrt_IP, Int_Octets, Bitsrt_Octets = parse_ip(ip)
 
     # Parse CIDR_Prefix Mask and store as 32 bitstring
-    Subnet_Mask_Bitstring = parseCIDR(CIDR_Prefix)
+    Subnet_Mask_Bitstring = parse_cidr(CIDR_Prefix)
 
     # Calculate number of IPs in subnet
     Subnet_Group_Size = 2 ** (32 - int(CIDR_Prefix.strip("/")))
 
     # Calculate network address by bitwise ANDing IP with Mask, store as bitstrOctet list
-    Network_Address_Bitstrs = parseBitstr(andBitstrs(Bitsrt_IP, Subnet_Mask_Bitstring))
+    Network_Address_Bitstrs = parse_bitstr(and_bitstr(Bitsrt_IP, Subnet_Mask_Bitstring))
 
     # Convert bitsrt list to list of ints
-    Network_Address_Ints = [bitstrToInt(octet) for octet in Network_Address_Bitstrs]
+    Network_Address_Ints = [bitstr_to_int(octet) for octet in Network_Address_Bitstrs]
 
     # Add one to network address to find first host IP in Subnet
-    First_Host_IP = [octet for octet in AddSubtractIP(Network_Address_Ints, 1)]
+    First_Host_IP = [octet for octet in add_or_subtract_ip(Network_Address_Ints, 1)]
 
     # Find Broadcast Address by adding subnetGroupsize - 1 to network address
     Broadcast_IP = [
-        octet for octet in AddSubtractIP(Network_Address_Ints, Subnet_Group_Size - 1)
+        octet for octet in add_or_subtract_ip(Network_Address_Ints, Subnet_Group_Size - 1)
     ]
 
     # Subtract one from Broadcast_IP to find Last_Host_IP
-    Last_Host_IP = [octet for octet in AddSubtractIP(Broadcast_IP, -1)]
+    Last_Host_IP = [octet for octet in add_or_subtract_ip(Broadcast_IP, -1)]
 
     # Subtract two from group size for usable IPs
     Num_Host_IPs = Subnet_Group_Size - 2
@@ -339,7 +339,7 @@ def subnetCalc(ip, CIDR_Prefix):
 
 
 # User Input
-def Get_Input():
+def get_input():
     while True:
         Input_IP = input("Enter an IP address or (Q)uit: ")
 
@@ -355,7 +355,7 @@ def Get_Input():
             Last_Host_IP,
             Broadcast_IP,
             Num_Host_IPs,
-        ) = subnetCalc(Input_IP, Input_CIDR)
+        ) = subnet_calc(Input_IP, Input_CIDR)
 
         # Convert Int Octets to Strings
         Network_Address_Str = ".".join([str(octet) for octet in Network_Address])
@@ -371,4 +371,4 @@ def Get_Input():
         print("Usable IPs:", Num_Host_IPs)
 
 
-Get_Input()
+get_input()
