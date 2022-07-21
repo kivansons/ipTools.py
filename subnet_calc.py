@@ -25,7 +25,7 @@ def parse_ip(str_ip_param):
             raise ValueError("Error! Invalid character in IP")
 
     # Split Str_IP and store octets as int in Int_Octets if split element is not empty
-    int_octets = [int(octet) for octet in str_ip.split(".") if octet != ""]
+    int_octets = [int(octet) for octet in str_ip.split(".")]
 
     # Test 3: IP should contain exactly 4 octets
     if len(int_octets) != 4:
