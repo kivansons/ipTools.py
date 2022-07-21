@@ -40,15 +40,15 @@ def parse_ip(str_ip_param):
 
     # Convert Int_Octets to Bitstr_Octets
     for i in range(len(int_octets)):
-        workingOctet = int_octets[i]
+        working_octet = int_octets[i]
 
         # For each 8bit power of 2, subtract and append 0 or 1 to bitstring
         for j in range(len(EIGHT_BIT_POWERS)):
-            if workingOctet - EIGHT_BIT_POWERS[j] < 0:
+            if working_octet - EIGHT_BIT_POWERS[j] < 0:
                 bitstr_octets[i] += "0"
 
-            elif workingOctet - EIGHT_BIT_POWERS[j] >= 0:
-                workingOctet -= EIGHT_BIT_POWERS[j]
+            elif working_octet - EIGHT_BIT_POWERS[j] >= 0:
+                working_octet -= EIGHT_BIT_POWERS[j]
                 bitstr_octets[i] += "1"
 
         # Build 32bit Bitstr_IP from octets in Bitstr_Octets
@@ -94,49 +94,49 @@ def parse_cidr(cidr_mask_param):
     return subnet_mask_bitstring
 
 
-def parse_bitstr(Bitstr_IP):
+def parse_bitstr(bitstr_IP):
     """Accept a 32bit bitstring and return four bitstring octets"""
 
-    Bitstr_Octets = ["", "", "", ""]
+    bitstr_bctets = ["", "", "", ""]
 
     for i in range(32):
-        Bitstr_Octets[i // 8] += Bitstr_IP[i]
-    return Bitstr_Octets
+        bitstr_bctets[i // 8] += bitstr_IP[i]
+    return bitstr_bctets
 
 
-def bitstr_to_int(Bitstr):
+def bitstr_to_int(bitstr):
     """Accept a bitstring and return a decimal int"""
 
-    Int_Octet = 0
+    int_octet = 0
     # Find the exponent of the most signifigant bit for the bitstring
-    Most_Signifigant_Exponent = len(Bitstr) - 1
+    most_signifigant_exponent = len(bitstr) - 1
 
-    for i, bit in enumerate(Bitstr):
+    for i, bit in enumerate(bitstr):
         # Add the bits decimal value calculated from it's exponent to Int_Octets accumulator
         if bit == "1":
-            Int_Octet += 2 ** (Most_Signifigant_Exponent - i)
+            int_octet += 2 ** (most_signifigant_exponent - i)
 
-    return Int_Octet
+    return int_octet
 
 
-def and_bitstr(Bitsrt_1, Bitsrt_2):
+def and_bitstr(bitsrt_1, bitsrt_2):
     """Accept two bitsrtings and return the results of a bitwise AND."""
 
     AND_Result = ""
 
-    if type(Bitsrt_1) != str or type(Bitsrt_2) != str:
+    if type(bitsrt_1) != str or type(bitsrt_2) != str:
         print("Error! bitsrtings must have type of Srt!")
         raise TypeError
 
-    if len(Bitsrt_1) != len(Bitsrt_2):
+    if len(bitsrt_1) != len(bitsrt_2):
         print("Error! bitstrings must be the same length")
         raise ValueError
 
     # Parse Bitsrt_1 and Bitsrt_2 bit by bit
-    for i in range(len(Bitsrt_1)):
+    for i in range(len(bitsrt_1)):
 
         # if both bits in Bitsrt_1,bitstr2 are 1 append a 1 to result
-        if Bitsrt_1[i] == "1" and Bitsrt_2[i] == "1":
+        if bitsrt_1[i] == "1" and bitsrt_2[i] == "1":
             AND_Result += "1"
         # else append 0
         else:
@@ -145,48 +145,48 @@ def and_bitstr(Bitsrt_1, Bitsrt_2):
     return AND_Result
 
 
-def add_ip(IP_Param, Summand_Param):
+def add_ip(ip_param, summand_param):
 
     """Accepts IP as Int_Octet list and adds a decimal int to the IP
     while properly carrying over to the next octet if needed.
     """
 
-    Summand = Summand_Param
-    ip = [octet for octet in IP_Param]
+    summand = summand_param
+    ip = [octet for octet in ip_param]
 
     # Walk through IP list backwards starting with 4th octet
     for i in range(len(ip) - 1, -1, -1):
         # if octet + Summand will not overflow current octet, add Summand to octet. Break from loop
-        if ip[i] + Summand < 256:
-            ip[i] += Summand
+        if ip[i] + summand < 256:
+            ip[i] += summand
             break
         # If octet will overflow and not indexing 1st octet
-        elif ip[i] + Summand >= 256 and i != 0:
-            Summand += ip[i]  # Add value of current octet to Summand
+        elif ip[i] + summand >= 256 and i != 0:
+            summand += ip[i]  # Add value of current octet to Summand
             ip[i] = 0  # Set octet to 0
-            ip[i] = Summand % 256  # Set current octet to remainder portion
-            Summand = Summand // 256  # Floor divide Summand to carry over to next octet
+            ip[i] = summand % 256  # Set current octet to remainder portion
+            summand = summand // 256  # Floor divide Summand to carry over to next octet
         # If indexing 1st octet and octet will overflow 255, raise an OverFlowError
-        elif i == 0 and ip[i] + Summand >= 256:
+        elif i == 0 and ip[i] + summand >= 256:
             raise OverflowError(
                 "Error! Supplied IP and Summand will result in an IP greater than 255.255.255.255"
             )
     return ip
 
 
-def subtract_ip(IP_Param, Subtrahend_Param):
+def subtract_ip(ip_param, subtrahend_param):
 
     """Accepts IP as Int_Octet list, and subtracts a decimal int from the the IP
     while properly borrowing from higher octets if needed.
     """
-    ip = [Int_Octet for Int_Octet in IP_Param]
-    Subtrahend = abs(Subtrahend_Param)
+    ip = [Int_Octet for Int_Octet in ip_param]
+    subtrahend = abs(subtrahend_param)
 
-    while Subtrahend > 0:
+    while subtrahend > 0:
         # If subtracting from 4th octet will result in val >= 0 no need to borrow
-        if ip[3] - Subtrahend >= 0:
-            ip[3] -= Subtrahend
-            Subtrahend -= Subtrahend
+        if ip[3] - subtrahend >= 0:
+            ip[3] -= subtrahend
+            subtrahend -= subtrahend
 
         # Else we need to borrow until 4th octet is equal to or larger than subtrahend
         else:
@@ -243,18 +243,18 @@ def subtract_ip(IP_Param, Subtrahend_Param):
     """
 
 
-def add_or_subtract_ip(IP_Param, Operand_Param):
+def add_or_subtract_ip(ip_param, operand_param):
     """Accepts IP as a string or Int_Octet List, and a positive or negative value decimal int
     validates the input and then calls the borrowSubtractIP() or carryAddIP() fuctions depending
     on the sign of the supplied int
     """
 
     # if a string IP is supplied try and parse to Int_Octet list using parseIP funct
-    if type(IP_Param) == str:
-        ip = [Int_Octet for Int_Octet in parse_ip(IP_Param)[1]]
+    if type(ip_param) == str:
+        ip = [int_octet for int_octet in parse_ip(ip_param)[1]]
     else:
-        ip = [octet for octet in IP_Param]
-    Operand = Operand_Param
+        ip = [octet for octet in ip_param]
+    operand = operand_param
 
     # IP should contain exactly 4 octets
     if len(ip) != 4:
@@ -273,25 +273,25 @@ def add_or_subtract_ip(IP_Param, Operand_Param):
             raise ValueError("Error! Octet in IP is negative")
 
     # Supplied Operand should be type of int
-    if type(Operand) != int:
-        raise TypeError("Error! Summand expected int, got", type(Operand))
+    if type(operand) != int:
+        raise TypeError("Error! Summand expected int, got", type(operand))
 
     # if Operand is zero just return IP
-    if Operand == 0:
+    if operand == 0:
         return ip
 
     # If Operand is positive perform addition
-    if Operand > 0:
-        ip = add_ip(ip, Operand)
+    if operand > 0:
+        ip = add_ip(ip, operand)
         return ip
     # If Operand is negative convert to positive int and perform subtraction
-    if Operand < 0:
-        Operand = Operand * -1
-        ip = subtract_ip(ip, Operand)
+    if operand < 0:
+        operand = operand * -1
+        ip = subtract_ip(ip, operand)
         return ip
 
 
-def subnet_calc(ip, CIDR_Prefix):
+def subnet_calc(ip, cidr_prefix):
     """Accepts IP and CIDR_Prefix slash prefex and returns subnetting information"""
     """
     Todo:
@@ -307,68 +307,77 @@ def subnet_calc(ip, CIDR_Prefix):
     """
 
     # get IP working information to calculate subnet information
-    Bitsrt_IP, Int_Octets, Bitsrt_Octets = parse_ip(ip)
+    bitsrt_ip, int_octets, bitsrt_octets = parse_ip(ip)
 
     # Parse CIDR_Prefix Mask and store as 32 bitstring
-    Subnet_Mask_Bitstring = parse_cidr(CIDR_Prefix)
+    subnet_mask_bitstring = parse_cidr(cidr_prefix)
 
     # Calculate number of IPs in subnet
-    Subnet_Group_Size = 2 ** (32 - int(CIDR_Prefix.strip("/")))
+    subnet_group_size = 2 ** (32 - int(cidr_prefix.strip("/")))
 
     # Calculate network address by bitwise ANDing IP with Mask, store as bitstrOctet list
-    Network_Address_Bitstrs = parse_bitstr(and_bitstr(Bitsrt_IP, Subnet_Mask_Bitstring))
+    network_address_bitstrs = parse_bitstr(and_bitstr(bitsrt_ip, subnet_mask_bitstring))
 
     # Convert bitsrt list to list of ints
-    Network_Address_Ints = [bitstr_to_int(octet) for octet in Network_Address_Bitstrs]
+    network_address_ints = [bitstr_to_int(octet) for octet in network_address_bitstrs]
 
     # Add one to network address to find first host IP in Subnet
-    First_Host_IP = [octet for octet in add_or_subtract_ip(Network_Address_Ints, 1)]
+    first_host_ip = [octet for octet in add_or_subtract_ip(network_address_ints, 1)]
 
     # Find Broadcast Address by adding subnetGroupsize - 1 to network address
-    Broadcast_IP = [
-        octet for octet in add_or_subtract_ip(Network_Address_Ints, Subnet_Group_Size - 1)
+    broadcast_ip = [
+        octet for octet in add_or_subtract_ip(network_address_ints, subnet_group_size - 1)
     ]
 
     # Subtract one from Broadcast_IP to find Last_Host_IP
-    Last_Host_IP = [octet for octet in add_or_subtract_ip(Broadcast_IP, -1)]
+    last_host_ip = [octet for octet in add_or_subtract_ip(broadcast_ip, -1)]
 
     # Subtract two from group size for usable IPs
-    Num_Host_IPs = Subnet_Group_Size - 2
+    num_host_ip = subnet_group_size - 2
 
-    return Network_Address_Ints, First_Host_IP, Last_Host_IP, Broadcast_IP, Num_Host_IPs
+    return network_address_ints, first_host_ip, last_host_ip, broadcast_ip, num_host_ip
 
 
 # User Input
 def get_input():
     while True:
-        Input_IP = input("Enter an IP address or (Q)uit: ")
-
-        if Input_IP.lower() == "q":
+        usr_input = str(input("Enter a IP subnet in CIDR notation (i.e. 192.168.0.1/24) or (Q)uit: "))
+        if usr_input.lower() == "q":
             break
 
-        Input_CIDR = input("Enter a subnet as CIDR slash prefix: ")
+        try:
+           input_ip,input_cidr = usr_input.split("/")
+        except:
+            print("Invalid Subnet, Try Again")
+            get_input()
 
+        input_cidr = "/" + input_cidr
+
+        try:
         # Get Subnet info from Subnet Calc Func
-        (
-            Network_Address,
-            First_Host_IP,
-            Last_Host_IP,
-            Broadcast_IP,
-            Num_Host_IPs,
-        ) = subnet_calc(Input_IP, Input_CIDR)
+            (
+                network_address,
+                first_host_ip,
+                last_host_ip,
+                broadcast_ip,
+                num_host_ip,
+            ) = subnet_calc(input_ip, input_cidr)
+        except Exception as error:
+            print(error)
+            get_input()
 
         # Convert Int Octets to Strings
-        Network_Address_Str = ".".join([str(octet) for octet in Network_Address])
-        First_Host_Str = ".".join([str(octet) for octet in First_Host_IP])
-        Last_Host_Str = ".".join([str(octet) for octet in Last_Host_IP])
-        Broadcast_Str = ".".join([str(octet) for octet in Broadcast_IP])
+        network_address_str = ".".join([str(octet) for octet in network_address])
+        first_host_str = ".".join([str(octet) for octet in first_host_ip])
+        last_host_str = ".".join([str(octet) for octet in last_host_ip])
+        broadcast_str = ".".join([str(octet) for octet in broadcast_ip])
 
         print("Your Subnet information:\n")
-        print("Network address:", Network_Address_Str)
-        print("First Host IP:", First_Host_Str)
-        print("Last Host IP:", Last_Host_Str)
-        print("Broadcast IP:", Broadcast_Str)
-        print("Usable IPs:", Num_Host_IPs)
+        print("Network address:", network_address_str)
+        print("First Host IP:", first_host_str)
+        print("Last Host IP:", last_host_str)
+        print("Broadcast IP:", broadcast_str)
+        print("Usable IPs:", num_host_ip)
 
-
-get_input()
+if __name__ == "__main__":
+    get_input()
