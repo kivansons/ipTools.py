@@ -36,6 +36,7 @@ def test_parse_ip_raises_ValueError_for_invalid_chars():
         "Foobar",
         "This is a string.",
         " . .",
+        "",
         "192.168.0.1/24",
     ]
     for argument in invalid_char_arguments:
