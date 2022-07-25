@@ -45,7 +45,7 @@ def test_parse_ip_raises_ValueError_for_invalid_chars():
 
 
 def test_parse_ip_raises_ValueError_for_not_containing_four_octets():
-    """Make sure parse_ip() raises ValueError when arguments containing not 4 octets are passes"""
+    """Make sure parse_ip() raises ValueError when arguments containing not 4 octets are passed"""
     invalid_num_of_octets_arguments = [
         "192.168.0",
         "10.0.0.0.1",
