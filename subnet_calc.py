@@ -54,7 +54,7 @@ def parse_ip(str_ip_param):
         # Build 32bit Bitstr_IP from octets in Bitstr_Octets
         bitstr_ip = "".join(bitstr_octets)
 
-    return bitstr_ip, int_octets, bitstr_octets
+    return [bitstr_ip, int_octets, bitstr_octets]
 
 
 def parse_cidr(cidr_mask_param):
