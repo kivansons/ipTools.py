@@ -84,7 +84,7 @@ def test_parse_ip_raises_ValueError_for_octets_out_of_range():
 
 
 def test_parse_ip_returns_correct_output():
-    """Make sure parse_ip() returns the proper binary bitstr for a given dot decimal IP input"""
+    """Make sure parse_ip() returns the correct results for a known dot decimal IP input and known results"""
     test_inputs = [
         {
             "input": "192.168.0.1",
