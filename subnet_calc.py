@@ -70,10 +70,16 @@ def parse_cidr(cidr_mask_param):
     # Remove any whitespace
     cidr_prefix = cidr_prefix.strip()
 
+
+    if len(cidr_prefix) == 0:
+        raise ValueError("Error! Empty string passed as argument")
+
+
     # Test 2: CIDR_Prefix should only contain decimal digits and "/"
     for char in cidr_prefix:
         if char not in VALID_CHARS:
             raise ValueError("Error! Invalid character in CIDR_Prefix")
+
 
     # Test 3: First char should be "/"
     if cidr_prefix[0] != "/":

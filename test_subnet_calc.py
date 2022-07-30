@@ -167,3 +167,20 @@ def test_parse_cird_raises_TypeError_for_invalid_types():
         with pytest.raises(TypeError):
             parse_cidr(argument)
     return
+
+
+def test_parse_cidr_raises_ValueError_for_invalid_chars():
+    """Make sure parse_cidr() raises ValueError when unsupported chars in str are passed as arguments"""
+    invalid_char_arguments = [
+        "fe80:0000:000:000:000:0000",
+        "192.168.a.1",
+        "Foobar",
+        "This is a string.",
+        " . .",
+        "",
+        "192.168.0.1/24",
+    ]
+    for argument in invalid_char_arguments:
+        with pytest.raises(ValueError):
+            parse_cidr(argument)
+    return
