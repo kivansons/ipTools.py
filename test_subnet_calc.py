@@ -1,7 +1,9 @@
 import pytest
-from subnet_calc import parse_ip
+from subnet_calc import parse_ip, parse_cidr
 
-
+#################################################################
+# parse_ip() tests
+#################################################################
 def test_parse_ip_raises_TypeError_for_invalid_types():
     """Make sure parse_ip() raises TypeError when an invalid argument type is passed"""
     type_arguements = [
@@ -102,7 +104,7 @@ def test_parse_ip_returns_correct_output():
             "input": "121.255.26.157",
             "output": {
                 "bitsrt_ip": "01111001111111110001101010011101",
-                "int_octets": [121,255,26,157],
+                "int_octets": [121, 255, 26, 157],
                 "bitsrt_octets": ["01111001", "11111111", "00011010", "10011101"],
             },
         },
@@ -110,7 +112,7 @@ def test_parse_ip_returns_correct_output():
             "input": "255.255.255.255",
             "output": {
                 "bitsrt_ip": "11111111111111111111111111111111",
-                "int_octets": [255,255,255,255],
+                "int_octets": [255, 255, 255, 255],
                 "bitsrt_octets": ["11111111", "11111111", "11111111", "11111111"],
             },
         },
@@ -118,7 +120,7 @@ def test_parse_ip_returns_correct_output():
             "input": "0.0.0.0",
             "output": {
                 "bitsrt_ip": "00000000000000000000000000000000",
-                "int_octets": [0,0,0,0],
+                "int_octets": [0, 0, 0, 0],
                 "bitsrt_octets": ["00000000", "00000000", "00000000", "00000000"],
             },
         },
@@ -132,4 +134,36 @@ def test_parse_ip_returns_correct_output():
             output["bitsrt_octets"],
         ]
         assert parse_ip(input) == output_list
+    return
+
+
+#################################################################
+# parse_cidr() tests
+#################################################################
+def test_parse_cird_raises_TypeError_for_invalid_types():
+    """Makes sure a type error is raised if a non string argument is given"""
+    type_arguments = [
+        int(0),
+        int(16),
+        int(24),
+        int(32),
+        float(0.0),
+        float(1.1),
+        list([1, 2, 3, 4]),
+        list([]),
+        list(["foo", "bar"]),
+        tuple(""),
+        tuple(
+            (
+                1,
+                2,
+                3,
+                4,
+            )
+        ),
+        dict(key="value", foo="bar", num=2),
+    ]
+    for argument in type_arguments:
+        with pytest.raises(TypeError):
+            parse_cidr(argument)
     return
